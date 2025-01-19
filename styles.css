@@ -1,0 +1,115 @@
+/* General Reset */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(0, 255, 255, 0.5);
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Headings */
+h1 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+/* Form Elements */
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #ccc;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Inputs */
+.text-input,
+.file-label input[type="file"] {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.text-input:focus,
+.file-label input[type="file"]:hover {
+    border-color: #fff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+/* Button */
+.btn {
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(45deg, #00b3b3, #004c99);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-transform: uppercase;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.5);
+}
+
+.btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.8);
+}
+
+/* Result Section */
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    animation: fadeIn 1s ease-in-out;
+}
+
+.result h2 {
+    font-size: 1.5rem;
+    color: #00ffff;
+}
