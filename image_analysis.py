@@ -1,11 +1,15 @@
-import google.generativeai as genai
+from google import genai
 from PIL import Image
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Configure the API
-genai.configure(api_key="AIzaSyDME1zikC3YA5ZCg2R6Q6iPMoMAJrfWk6E")  # Replace with your actual API key
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 # Initialize the model
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = "gemini-2.5-flash"
 
 def main(image_path, prompt):
     print("Image Analysis with Gemini API")
@@ -15,7 +19,10 @@ def main(image_path, prompt):
     print(f"Response:\n")
     
     image = Image.open(image_path)
-    response = model.generate_content([prompt, image])
+    response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=[image, prompt]
+)
     
     return response.text
 
