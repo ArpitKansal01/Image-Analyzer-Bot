@@ -5,7 +5,7 @@ import image_analysis as img
 app = Flask(__name__)
 
 # Temporary uploads directory (optional, can use tempfile instead)
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = '/tmp/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
