@@ -9,7 +9,7 @@ load_dotenv()
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 # Initialize the model
-model = "gemini-2.5-flash"
+model = "gemini-3.7-flash"
 
 def main(image_path, prompt):
     print("Image Analysis with Gemini API")
