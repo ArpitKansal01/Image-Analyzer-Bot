@@ -1,251 +1,907 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Input Form</title>
+
+    <title>VisionAI — Image Analyzer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-      /* ===== GLOBAL STYLES ===== */
-      body {
+      * {
         margin: 0;
         padding: 0;
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: #ffffff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #05070d;
+        --card: rgba(15, 20, 32, 0.78);
+        --card-border: rgba(255, 255, 255, 0.09);
+
+        --cyan: #00e5ff;
+        --blue: #1677ff;
+        --purple: #7c3aed;
+
+        --text: #f5f7ff;
+        --muted: #8992a8;
+
+        --input: rgba(255, 255, 255, 0.045);
+      }
+
+      body {
         min-height: 100vh;
+        font-family: "Inter", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(
+            circle at 15% 10%,
+            rgba(0, 229, 255, 0.12),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(124, 58, 237, 0.14),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at 50% 100%,
+            rgba(22, 119, 255, 0.12),
+            transparent 35%
+          ),
+          var(--bg);
         overflow-x: hidden;
       }
 
-      /* ===== MAIN FORM CARD ===== */
-      .card {
-        margin-top: 60px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 20px;
-        padding: 40px;
-        width: 360px;
-        box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
-        backdrop-filter: blur(10px);
-        text-align: center;
-        animation: fadeIn 1s ease-in-out;
+      /* ================= BACKGROUND ================= */
+
+      .grid {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.18;
+
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.035) 1px,
+            transparent 1px
+          );
+
+        background-size: 50px 50px;
+
+        mask-image: linear-gradient(to bottom, black, transparent 90%);
       }
 
-      @keyframes fadeIn {
+      .orb {
+        position: fixed;
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.12;
+        pointer-events: none;
+      }
+
+      .orb.one {
+        background: #00e5ff;
+        top: -150px;
+        left: -150px;
+      }
+
+      .orb.two {
+        background: #7c3aed;
+        right: -150px;
+        top: 30%;
+      }
+
+      /* ================= HEADER ================= */
+
+      header {
+        width: min(1150px, 92%);
+        margin: auto;
+        padding: 28px 0;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+
+      .logo-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background: linear-gradient(135deg, var(--cyan), var(--blue));
+
+        box-shadow: 0 0 25px rgba(0, 229, 255, 0.35);
+
+        font-size: 18px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 8px 13px;
+
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 30px;
+
+        background: rgba(255, 255, 255, 0.035);
+
+        color: #aab3c7;
+        font-size: 0.78rem;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+
+        box-shadow: 0 0 10px #22c55e;
+      }
+
+      /* ================= HERO ================= */
+
+      .hero {
+        width: min(900px, 92%);
+        margin: 70px auto 45px;
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 8px 14px;
+
+        border-radius: 30px;
+        border: 1px solid rgba(0, 229, 255, 0.18);
+
+        background: rgba(0, 229, 255, 0.05);
+
+        color: #77efff;
+        font-size: 0.75rem;
+        font-weight: 600;
+
+        margin-bottom: 22px;
+      }
+
+      .badge span {
+        width: 6px;
+        height: 6px;
+
+        background: var(--cyan);
+        border-radius: 50%;
+
+        box-shadow: 0 0 10px var(--cyan);
+      }
+
+      .hero h1 {
+        font-size: clamp(2.5rem, 6vw, 4.7rem);
+        line-height: 1;
+        letter-spacing: -3px;
+
+        background: linear-gradient(
+          120deg,
+          #ffffff 20%,
+          #91f7ff 50%,
+          #6ea8ff 80%
+        );
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 650px;
+        margin: 22px auto 0;
+
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      /* ================= MAIN ================= */
+
+      main {
+        width: min(850px, 92%);
+        margin: auto;
+        padding-bottom: 80px;
+      }
+
+      .panel {
+        padding: 28px;
+
+        border-radius: 24px;
+
+        border: 1px solid var(--card-border);
+
+        background: var(--card);
+
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.35),
+          inset 0 1px rgba(255, 255, 255, 0.04);
+
+        animation: panelIn 0.7s ease;
+      }
+
+      @keyframes panelIn {
         from {
           opacity: 0;
-          transform: translateY(-20px);
+          transform: translateY(20px);
         }
+
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
 
-      h1 {
-        font-size: 2rem;
-        margin-bottom: 25px;
-        color: #00ffff;
-        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+      /* ================= UPLOAD ================= */
+
+      .upload-area {
+        position: relative;
+
+        min-height: 280px;
+
+        border: 1px dashed rgba(0, 229, 255, 0.3);
+        border-radius: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 229, 255, 0.06),
+          transparent 65%
+        );
+
+        cursor: pointer;
+
+        transition: 0.3s ease;
+
+        overflow: hidden;
       }
 
-      label {
-        font-size: 1rem;
-        color: #b0e0e6;
-        display: block;
-        margin-top: 15px;
-        text-align: left;
+      .upload-area:hover,
+      .upload-area.dragging {
+        border-color: var(--cyan);
+
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 229, 255, 0.12),
+          transparent 65%
+        );
+
+        box-shadow: 0 0 35px rgba(0, 229, 255, 0.08);
       }
 
-      input[type="file"],
-      input[type="text"] {
+      .upload-content {
+        position: relative;
+        z-index: 2;
+      }
+
+      .upload-icon {
+        width: 70px;
+        height: 70px;
+
+        margin: auto auto 18px;
+
+        border-radius: 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: linear-gradient(
+          135deg,
+          rgba(0, 229, 255, 0.15),
+          rgba(22, 119, 255, 0.15)
+        );
+
+        border: 1px solid rgba(0, 229, 255, 0.2);
+
+        color: var(--cyan);
+
+        font-size: 30px;
+      }
+
+      .upload-content h3 {
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+      }
+
+      .upload-content p {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .upload-content strong {
+        color: var(--cyan);
+      }
+
+      #user_input {
+        display: none;
+      }
+
+      /* ================= PREVIEW ================= */
+
+      .preview {
+        display: none;
+        position: absolute;
+        inset: 0;
+        background: #05070d;
+      }
+
+      .preview img {
         width: 100%;
-        padding: 12px;
-        margin-top: 10px;
-        border: none;
-        border-radius: 8px;
-        outline: none;
-        background: rgba(255, 255, 255, 0.15);
-        color: #ffffff;
-        font-size: 1rem;
-        transition: all 0.3s ease;
+        height: 100%;
+        object-fit: contain;
       }
 
-      input[type="file"] {
-        color: #b0e0e6;
+      .remove-image {
+        position: absolute;
+
+        top: 15px;
+        right: 15px;
+
+        width: 34px;
+        height: 34px;
+
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+
+        background: rgba(0, 0, 0, 0.7);
+
+        color: white;
+
         cursor: pointer;
+
+        z-index: 5;
       }
 
-      input[type="text"]:focus,
-      input[type="file"]:hover {
-        background: rgba(255, 255, 255, 0.25);
-        box-shadow: 0 0 8px #00ffff;
-      }
+      /* ================= PROMPT ================= */
 
-      input::placeholder {
-        color: rgba(255, 255, 255, 0.6);
-      }
-
-      button {
+      .field {
         margin-top: 25px;
-        padding: 12px 25px;
+      }
+
+      .field-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 10px;
+      }
+
+      .field-header label {
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .field-header span {
+        color: #626c82;
+        font-size: 0.7rem;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 115px;
+
+        resize: vertical;
+
+        padding: 16px;
+
+        border-radius: 14px;
+
+        border: 1px solid rgba(255, 255, 255, 0.08);
+
+        outline: none;
+
+        background: var(--input);
+
+        color: white;
+
+        font-family: inherit;
+        font-size: 0.9rem;
+
+        transition: 0.25s;
+      }
+
+      textarea::placeholder {
+        color: #596276;
+      }
+
+      textarea:focus {
+        border-color: rgba(0, 229, 255, 0.5);
+
+        box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.06);
+      }
+
+      /* ================= BUTTON ================= */
+
+      .submit-btn {
+        width: 100%;
+
+        margin-top: 20px;
+
+        padding: 15px;
+
         border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: bold;
-        color: #ffffff;
-        background: linear-gradient(90deg, #00c6ff, #0072ff);
+        border-radius: 13px;
+
+        color: white;
+
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 0.9rem;
+
         cursor: pointer;
-        transition: all 0.3s ease;
-        text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+
+        background: linear-gradient(100deg, #00bcd4, #1677ff, #7c3aed);
+
+        background-size: 200% 100%;
+
+        box-shadow: 0 12px 30px rgba(22, 119, 255, 0.2);
+
+        transition: 0.3s;
       }
 
-      button:hover {
-        background: linear-gradient(90deg, #0072ff, #00c6ff);
-        box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff;
+      .submit-btn:hover {
         transform: translateY(-2px);
+
+        background-position: 100% 0;
+
+        box-shadow: 0 18px 40px rgba(22, 119, 255, 0.3);
       }
 
-      /* ===== RESULT BOX ===== */
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+
+      /* ================= RESULT ================= */
+
       .result-box {
-        margin-top: 40px;
-        width: 90%;
-        max-width: 1000px;
-        background: rgba(0, 255, 255, 0.08);
-        border: 1px solid rgba(0, 255, 255, 0.3);
-        border-radius: 15px;
-        padding: 25px 40px;
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-        backdrop-filter: blur(8px);
-        animation: fadeInResult 1s ease-in-out;
-        overflow-y: auto;
-        max-height: 70vh;
+        margin-top: 30px;
+
+        padding: 28px;
+
+        border-radius: 22px;
+
+        border: 1px solid rgba(0, 229, 255, 0.15);
+
+        background: linear-gradient(
+          145deg,
+          rgba(0, 229, 255, 0.06),
+          rgba(124, 58, 237, 0.04)
+        );
+
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+
+        animation: resultIn 0.7s ease;
       }
 
-      @keyframes fadeInResult {
+      @keyframes resultIn {
         from {
           opacity: 0;
           transform: translateY(15px);
         }
+
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
 
-      .result-box h2 {
-        font-size: 1.5rem;
-        color: #00ffff;
-        margin-bottom: 15px;
-        text-shadow: 0 0 8px #00ffff;
+      .result-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        margin-bottom: 22px;
+
+        padding-bottom: 18px;
+
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
       }
 
-      /* ===== STYLES INSIDE RESULT ===== */
-      .result-box strong {
-        color: #00e6e6;
+      .result-icon {
+        width: 38px;
+        height: 38px;
+
+        border-radius: 10px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(0, 229, 255, 0.1);
+
+        color: var(--cyan);
       }
-      .result-box ul {
+
+      .result-header h2 {
+        font-size: 1rem;
+      }
+
+      .result-header p {
+        color: #687286;
+        font-size: 0.7rem;
+        margin-top: 3px;
+      }
+
+      .result-content {
+        color: #cbd3e4;
+        line-height: 1.8;
+        font-size: 0.9rem;
+      }
+
+      .result-content h1,
+      .result-content h2,
+      .result-content h3 {
+        color: var(--cyan);
+        margin: 20px 0 10px;
+      }
+
+      .result-content strong {
+        color: #ffffff;
+      }
+
+      .result-content ul,
+      .result-content ol {
         padding-left: 25px;
       }
-      .result-box li {
-        margin-bottom: 8px;
-        color: #b0e0e6;
-        line-height: 1.6;
-      }
-      .result-box p {
-        color: #d0f0f8;
-        margin-bottom: 12px;
-        line-height: 1.6;
-      }
-      .result-box h3 {
-        color: #00ffff;
-        margin-top: 18px;
-        margin-bottom: 8px;
-        text-shadow: 0 0 6px #00ffff;
+
+      .result-content li {
+        margin-bottom: 7px;
       }
 
-      /* ===== FLOATING PARTICLES ===== */
-      .particle {
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        background: #00ffff;
+      /* ================= LOADING ================= */
+
+      .loading {
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+
+        margin-top: 20px;
+
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .loader {
+        width: 16px;
+        height: 16px;
+
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        border-top-color: var(--cyan);
+
         border-radius: 50%;
-        opacity: 0.5;
-        animation: float 10s infinite;
+
+        animation: spin 0.8s linear infinite;
       }
 
-      @keyframes float {
-        0% {
-          transform: translateY(0) scale(1);
-          opacity: 0.6;
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
-        50% {
-          transform: translateY(-50px) scale(1.2);
-          opacity: 1;
+      }
+
+      /* ================= FOOTER ================= */
+
+      footer {
+        text-align: center;
+
+        color: #465066;
+
+        font-size: 0.7rem;
+
+        padding-bottom: 25px;
+      }
+
+      /* ================= RESPONSIVE ================= */
+
+      @media (max-width: 600px) {
+        header {
+          padding: 20px 0;
         }
-        100% {
-          transform: translateY(0) scale(1);
-          opacity: 0.6;
+
+        .status {
+          display: none;
+        }
+
+        .hero {
+          margin-top: 45px;
+        }
+
+        .hero h1 {
+          letter-spacing: -2px;
+        }
+
+        .hero p {
+          font-size: 0.85rem;
+        }
+
+        .panel {
+          padding: 15px;
+          border-radius: 18px;
+        }
+
+        .upload-area {
+          min-height: 230px;
+        }
+
+        .result-box {
+          padding: 20px;
         }
       }
     </style>
   </head>
 
   <body>
-    <!-- Background Particles -->
-    <div
-      class="particle"
-      style="top: 10%; left: 20%; animation-delay: 0s"
-    ></div>
-    <div
-      class="particle"
-      style="top: 40%; left: 80%; animation-delay: 2s"
-    ></div>
-    <div
-      class="particle"
-      style="top: 70%; left: 50%; animation-delay: 4s"
-    ></div>
-    <div
-      class="particle"
-      style="top: 30%; left: 60%; animation-delay: 6s"
-    ></div>
+    <div class="grid"></div>
+    <div class="orb one"></div>
+    <div class="orb two"></div>
 
-    <!-- Main Input Form -->
-    <div class="card">
-      <h1>AI Input Form</h1>
-      <form action="/submit" method="post" enctype="multipart/form-data">
-        <label for="user_input">Upload Image:</label>
-        <input
-          type="file"
-          accept="image/*"
-          name="user_input"
-          id="user_input"
-          required
-        />
+    <!-- HEADER -->
 
-        <label for="prompt">Enter Prompt:</label>
-        <input
-          type="text"
-          name="prompt"
-          id="prompt"
-          placeholder="Describe your analysis request..."
-          required
-        />
+    <header>
+      <div class="logo">
+        <div class="logo-icon">✦</div>
 
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+        VisionAI
+      </div>
 
-    <!-- Result Section -->
-    {% if result %}
-    <div class="result-box">
-      <h2>Analysis Result</h2>
-      <div class="result-content">{{ result|safe }}</div>
-    </div>
-    {% endif %}
+      <div class="status">
+        <span class="status-dot"></span>
+        AI Engine Online
+      </div>
+    </header>
+
+    <!-- HERO -->
+
+    <section class="hero">
+      <div class="badge">
+        <span></span>
+        AI POWERED IMAGE ANALYSIS
+      </div>
+
+      <h1>
+        See Beyond<br />
+        The Image.
+      </h1>
+
+      <p>
+        Upload an image and tell the AI what you want to know. Get intelligent
+        visual analysis powered by advanced multimodal AI.
+      </p>
+    </section>
+
+    <!-- MAIN -->
+
+    <main>
+      <div class="panel">
+        <form
+          id="analysisForm"
+          action="/submit"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <!-- IMAGE UPLOAD -->
+
+          <label class="upload-area" id="uploadArea" for="user_input">
+            <input
+              type="file"
+              name="user_input"
+              id="user_input"
+              accept="image/*"
+              required
+            />
+
+            <div class="upload-content" id="uploadContent">
+              <div class="upload-icon">↑</div>
+
+              <h3>Drop your image here</h3>
+
+              <p>or <strong>browse files</strong></p>
+
+              <p style="margin-top: 10px; font-size: 0.7rem">
+                PNG, JPG, JPEG, WEBP · Max 10MB
+              </p>
+            </div>
+
+            <div class="preview" id="preview">
+              <img id="previewImage" src="" alt="Image preview" />
+
+              <button type="button" class="remove-image" id="removeImage">
+                ×
+              </button>
+            </div>
+          </label>
+
+          <!-- PROMPT -->
+
+          <div class="field">
+            <div class="field-header">
+              <label for="prompt"> What should I analyze? </label>
+
+              <span> Be specific for better results </span>
+            </div>
+
+            <textarea
+              name="prompt"
+              id="prompt"
+              placeholder="Example: Describe this image in detail and identify any objects, people, text, or potential hazards..."
+              required
+            ></textarea>
+          </div>
+
+          <!-- SUBMIT -->
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            ✦ Analyze Image
+          </button>
+
+          <div class="loading" id="loading">
+            <div class="loader"></div>
+
+            Analyzing your image with AI...
+          </div>
+        </form>
+      </div>
+
+      <!-- RESULT -->
+
+      {% if result %}
+
+      <div class="result-box">
+        <div class="result-header">
+          <div class="result-icon">✦</div>
+
+          <div>
+            <h2>AI Analysis</h2>
+
+            <p>Generated from your uploaded image</p>
+          </div>
+        </div>
+
+        <div class="result-content">{{ result|safe }}</div>
+      </div>
+
+      {% endif %}
+    </main>
+
+    <footer>VisionAI · Intelligent Image Understanding</footer>
+
+    <script>
+      const fileInput = document.getElementById("user_input");
+
+      const uploadArea = document.getElementById("uploadArea");
+
+      const uploadContent = document.getElementById("uploadContent");
+
+      const preview = document.getElementById("preview");
+
+      const previewImage = document.getElementById("previewImage");
+
+      const removeImage = document.getElementById("removeImage");
+
+      const form = document.getElementById("analysisForm");
+
+      const loading = document.getElementById("loading");
+
+      const submitBtn = document.getElementById("submitBtn");
+
+      /* ================= IMAGE PREVIEW ================= */
+
+      fileInput.addEventListener("change", function () {
+        const file = this.files[0];
+
+        if (!file) return;
+
+        showPreview(file);
+      });
+
+      function showPreview(file) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          previewImage.src = e.target.result;
+
+          preview.style.display = "block";
+
+          uploadContent.style.display = "none";
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+      /* ================= REMOVE IMAGE ================= */
+
+      removeImage.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        e.stopPropagation();
+
+        fileInput.value = "";
+
+        preview.style.display = "none";
+
+        uploadContent.style.display = "block";
+      });
+
+      /* ================= DRAG & DROP ================= */
+
+      uploadArea.addEventListener("dragover", function (e) {
+        e.preventDefault();
+
+        uploadArea.classList.add("dragging");
+      });
+
+      uploadArea.addEventListener("dragleave", function () {
+        uploadArea.classList.remove("dragging");
+      });
+
+      uploadArea.addEventListener("drop", function (e) {
+        e.preventDefault();
+
+        uploadArea.classList.remove("dragging");
+
+        const files = e.dataTransfer.files;
+
+        if (!files.length) return;
+
+        fileInput.files = files;
+
+        showPreview(files[0]);
+      });
+
+      /* ================= SUBMIT ================= */
+
+      form.addEventListener("submit", function () {
+        submitBtn.disabled = true;
+
+        submitBtn.style.opacity = "0.6";
+
+        submitBtn.innerHTML = "Analyzing...";
+
+        loading.style.display = "flex";
+      });
+    </script>
   </body>
 </html>
